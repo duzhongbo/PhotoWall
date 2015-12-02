@@ -9,8 +9,8 @@
 <style type="text/css">
 body{margin:0;}
 .wrap{width:330px;margin:0 auto;background-color:#333;padding:10px 0 0 10px;overflow:hidden;}
-.box{width:100px;height:100px;background-color:#ccc;text-align:center;font-size:100px;font-weight:bold;float:left;margin:0 10px 10px 0;}
-
+.box{background-color:#ccc;text-align:center;font-size:100px;font-weight:bold;float:left;margin:0 10px 10px 0;}
+.box{width:98px;height:98px;border:1px solid #999;}
 
 </style>
 
@@ -52,12 +52,12 @@ function getAllPos(){
 }
 // 给dom对象绝对定位
 function absoluteDom(){
-	var aPos = getAllPos();
+	var aPos = getAllPos(),box,pos;
 	for(var i=0;i<9;i++){
-		boxs[i].style.position = 'absolute';
-		boxs[i].style.top = aPos[i].top +'px';
-		boxs[i].style.left = aPos[i].left +'px';
-		drag(boxs[i]);
+		box=boxs[i]; pos=aPos[i];
+		box.style.cssText = 'position:absolute;top:'+
+		pos.top+'px;left:'+pos.left+'px;';
+		drag(box);
 	}
 }
 // 给dom对象绑定拖拽
@@ -69,6 +69,7 @@ function drag(box){
 		bDrag = true;
 		disX = e.clientX - box.offsetLeft;
 		disY = e.clientY - box.offsetTop;
+		upZIndex(box);
 	}
 	box.onmousemove=function(e){
 		if(!bDrag){
@@ -83,8 +84,17 @@ function drag(box){
 		bDrag = false;
 	}
 }
-
-
+// 将当前对象层级调高
+function upZIndex(oDom){
+	for(var i=0;i<9;i++){
+		boxs[i].style.zIndex=0;
+	}
+	oDom.style.zIndex=1;
+}
+// 功能入口
+function main(){
+	absoluteDom();
+}
 
 </script>
 
