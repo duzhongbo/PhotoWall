@@ -70,6 +70,7 @@ function drag(box){
 		disX = e.clientX - box.offsetLeft;
 		disY = e.clientY - box.offsetTop;
 		upZIndex(box);
+		
 	}
 	box.onmousemove=function(e){
 		if(!bDrag){
@@ -79,6 +80,7 @@ function drag(box){
 		var y = e.clientY - disY;
 		box.style.left=x+'px';
 		box.style.top=y+'px';
+		getNearestIndex(getAllDis(box));
 	}
 	box.onmouseup=function(){
 		bDrag = false;
@@ -90,6 +92,33 @@ function upZIndex(oDom){
 		boxs[i].style.zIndex=0;
 	}
 	oDom.style.zIndex=1;
+}
+// 计算两个矩形的距离
+function getDistance(obj1,obj2){
+	var a = (obj1.offsetLeft + obj1.offsetWidth / 2) - (obj2.offsetLeft + obj2.offsetWidth / 2);
+	var b = (obj1.offsetTop + obj1.offsetTop / 2) - (obj2.offsetTop + obj2.offsetTop / 2);
+	return Math.sqrt(a * a + b * b)
+}
+// 获取每个box距离当前box的距离
+function getAllDis(oCurBox){
+	var aDis=[];
+	for(var i=0;i<9;i++){
+		if(boxs[i]==oCurBox){
+			aDis.push(Number.MAX_VALUE);
+		}
+		aDis.push(getDistance(boxs[i],oCurBox));
+	}
+	return aDis;
+}
+// 得到距离最近的box下标
+function getNearestIndex(arr){
+	var minIndex = -1;
+	var minNum = Number.MAX_VALUE;
+	for(var i=0;i<9;i++){
+        arr[i] < minNum && (minNum = arr[i], minIndex = i);
+	}
+	console.log(minIndex);
+	return minIndex;
 }
 // 功能入口
 function main(){
