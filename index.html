@@ -45,10 +45,43 @@ var boxs = document.querySelectorAll('.box');
 // 得到全部盒子的位置数组
 function getAllPos(){
 	var aPos=[];
-	for(var i=0,len=boxs.length;i<len;i++){
+	for(var i=0;i<9;i++){
 		aPos.push(getPos(boxs[i]));
 	}
 	return aPos;
+}
+// 给dom对象绝对定位
+function absoluteDom(){
+	var aPos = getAllPos();
+	for(var i=0;i<9;i++){
+		boxs[i].style.position = 'absolute';
+		boxs[i].style.top = aPos[i].top +'px';
+		boxs[i].style.left = aPos[i].left +'px';
+		drag(boxs[i]);
+	}
+}
+// 给dom对象绑定拖拽
+function drag(box){
+	var disX,disY;
+	var bDrag = false;
+
+	box.onmousedown=function(e){
+		bDrag = true;
+		disX = e.clientX - box.offsetLeft;
+		disY = e.clientY - box.offsetTop;
+	}
+	box.onmousemove=function(e){
+		if(!bDrag){
+			return;
+		}
+		var x = e.clientX - disX;
+		var y = e.clientY - disY;
+		box.style.left=x+'px';
+		box.style.top=y+'px';
+	}
+	box.onmouseup=function(){
+		bDrag = false;
+	}
 }
 
 
