@@ -48,6 +48,7 @@ function getAllPos(){
 	for(var i=0;i<9;i++){
 		aPos.push(getPos(boxs[i]));
 	}
+	window.allPos = aPos;
 	return aPos;
 }
 // 给dom对象绝对定位
@@ -70,7 +71,8 @@ function drag(box){
 		disX = e.clientX - box.offsetLeft;
 		disY = e.clientY - box.offsetTop;
 		upZIndex(box);
-		
+		window.curIndex = this.innerHTML -1;
+		console.log("curIndex:"+curIndex);
 	}
 	box.onmousemove=function(e){
 		if(!bDrag){
@@ -84,6 +86,12 @@ function drag(box){
 	}
 	box.onmouseup=function(){
 		bDrag = false;
+		if(isButt(boxs[curIndex],boxs[minIndex])){// 位置互换
+			inPos(boxs[curIndex],allPos[minIndex]);
+			inPos(boxs[minIndex],allPos[curIndex]);
+		}else{// 当前box返回原位
+			inPos(boxs[curIndex],allPos[curIndex]);
+		}
 	}
 }
 // 将当前对象层级调高
@@ -118,7 +126,27 @@ function getNearestIndex(arr){
         arr[i] < minNum && (minNum = arr[i], minIndex = i);
 	}
 	console.log(minIndex);
+	window.minIndex = minIndex;
 	return minIndex;
+}
+// 判断最近的box和当前box是否有交集
+function isButt(obj1, obj2){
+	var l1 = obj1.offsetLeft;
+	var t1 = obj1.offsetTop;
+	var r1 = l1 + obj1.offsetWidth;
+	var b1 = t1 + obj1.offsetHeight;
+	
+	var l2 = obj2.offsetLeft;
+	var t2 = obj2.offsetTop;
+	var r2 = l2 + obj2.offsetWidth;
+	var b2 = t2 + obj2.offsetHeight;
+	
+	return !(r1 < l2 || b1 < t2 || r2 < l1 || b2 < t1)
+}
+// 将dom定位到指定位置
+function inPos(oDom,oPos){
+	oDom.style.left = oPos.left +'px';
+	oDom.style.top = oPos.top +'px';
 }
 // 功能入口
 function main(){
